@@ -178,6 +178,12 @@ AWS Console opens -- no separate AWS credentials used
 
 ---
 
+## Security Note
+
+The Federation Metadata XML used in this integration is not included in this repository. It contains tenant-specific configuration data including identity provider URLs, certificate information, and directory identifiers that are not suitable for public repositories. Federation Metadata XML is available on request.
+
+---
+
 ## What is Next
 
 - Add Conditional Access policy to enforce MFA for AWS access
