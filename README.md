@@ -114,8 +114,6 @@ AWS Console opens -- no separate AWS credentials used
 
 ### Entra ID Configuration
 
-**Step 1 - AWS Enterprise Application Added**
-![Entra Enterprise App](screenshots/01-entra-enterprise-app-aws-added.png)
 
 **Step 2 - SAML Setup Initiated**
 ![SAML Setup](screenshots/02-entra-saml-setup-begin.png)
