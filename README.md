@@ -81,6 +81,14 @@ AWS Console opens -- no separate AWS credentials used
 
 ---
 
+## Relevance to Regulated Industries
+
+In Canadian financial institutions operating under OSFI E-21 and FINTRAC requirements, cross-platform identity federation is not optional — it is a compliance requirement. When engineering and DevOps teams access AWS infrastructure using separate credentials, the organization faces three risks: orphaned accounts when staff leave, split audit trails across two platforms, and no centralized enforcement of MFA or Conditional Access policies.
+
+Federating AWS access through Microsoft Entra ID resolves all three. A single deprovisioning action in Entra ID immediately revokes access across both platforms. All authentication events flow into one audit log. MFA and Conditional Access policies apply universally — including to cloud infrastructure access. This is the identity model that Big 6 banks, insurance carriers, and regulated fintechs are actively implementing.
+
+---
+
 ## Tech Stack
 
 | Component | Technology |
@@ -196,6 +204,6 @@ The Federation Metadata XML used in this integration is not included in this rep
 ## Author
 
 **Md Rahat Islam Anik**
-Cloud Computing & Network Administration - George Brown College - May 2026
+Identity & Cloud Operations Specialist · Toronto, Canada
 [linkedin.com/in/rahatislamanik](https://linkedin.com/in/rahatislamanik) - [github.com/rahatislamanik-spec](https://github.com/rahatislamanik-spec)
 
