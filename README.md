@@ -147,6 +147,8 @@ Federating AWS access through Microsoft Entra ID helps address these risks by ma
 | CloudTrail sign-in evidence | Not evidenced | Future enhancement |
 | Production deployment | Not claimed | Self-directed lab case study |
 
+For a screenshot-by-screenshot evidence summary, see [docs/evidence-map.md](docs/evidence-map.md).
+
 ---
 
 ## Screenshots - Full Build Walkthrough
