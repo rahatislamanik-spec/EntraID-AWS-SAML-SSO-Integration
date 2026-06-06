@@ -151,70 +151,70 @@ For a screenshot-by-screenshot evidence summary, see [docs/evidence-map.md](docs
 
 ---
 
-## Screenshots - Full Build Walkthrough
+## Screenshots - Build Evidence
 
 ### Entra ID Configuration
 
 
-**Step 2 - SAML Setup Initiated**
+**Step 1 - Entra Tenant and Admin Context**
 ![SAML Setup](screenshots/02-entra-saml-setup-begin.png)
 
-**Step 3 - Basic SAML Configuration**
+**Step 2 - Enterprise Applications View**
 ![Basic SAML Config](screenshots/03-entra-basic-saml-config.png)
 
-**Step 4 - Entity ID and Reply URL Configured**
+**Step 3 - Browse Microsoft Entra App Gallery**
 ![Entity ID and Reply URL](screenshots/04-entra-entity-id-reply-url.png)
 
-**Step 5 - Attribute Claims Mapping**
+**Step 4 - AWS Single-Account Access Application Overview**
 ![Attribute Claims](screenshots/05-entra-attribute-claims-mapping.png)
 
-**Step 6 - Token Signing Certificate**
+**Step 5 - Users and Groups Assignment View**
 ![Token Certificate](screenshots/06-entra-token-signing-certificate.png)
 
-**Step 7 - SAML Configuration Overview**
+**Step 6 - SAML Settings Save Prompt and Attribute Claims**
 ![SAML Overview](screenshots/07-entra-saml-overview-complete.png)
 
-**Step 8 - Users and Groups Section**
+**Step 7 - Users and Groups Section**
 ![Users Groups](screenshots/08-entra-users-groups-section.png)
 
-**Step 9 - User Assigned to Application**
+**Step 8 - AWS IAM Identity Center Guidance Screen**
 ![User Assigned](screenshots/09-entra-user-assigned-to-app.png)
 
-**Step 10 - Assignment Confirmed**
+**Step 9 - Entra Assignment Confirmation**
 ![Assignment Confirmed](screenshots/10-entra-assignment-confirmed.png)
 
-**Step 11 - Final SAML Configuration**
+**Step 10 - AWS IAM Identity Center Related Services Screen**
 ![Final Config](screenshots/11-entra-saml-config-final.png)
 
 ### AWS IAM Configuration
 
-**Step 12 - AWS IAM Dashboard**
+**Step 11 - AWS IAM Dashboard**
 ![AWS IAM](screenshots/12-aws-iam-dashboard.png)
 
-**Step 13 - EntraID Identity Provider Created in AWS**
+**Step 12 - Entra Basic SAML Configuration Screen**
 ![Identity Provider Created](screenshots/13-aws-identity-provider-entraid-created.png)
 
-**Step 14 - Create Role with SAML Federation**
+**Step 13 - Create AWS Role with SAML Federation**
 ![Create Role](screenshots/14-aws-create-role-saml-federation.png)
 
-**Step 15 - ReadOnlyAccess Policy Selected**
+**Step 14 - ReadOnlyAccess Policy Selected**
 ![ReadOnly Policy](screenshots/15-aws-readonlyaccess-policy-selected.png)
 
-**Step 16 - Role Name and Review**
+**Step 15 - Role Name and Review**
 ![Role Review](screenshots/16-aws-role-name-review.png)
 
-**Step 17 - EntraID-ReadOnly Role Created**
+**Step 16 - EntraID-ReadOnly Role Created**
 ![Role Created](screenshots/17-aws-entraid-readonly-role-created.png)
 
 ### Final Configuration and Proof
 
-**Step 18 - Role ARN Mapped Back in Entra ID**
+**Step 17 - Role Claim Mapping in Entra ID**
 ![Role ARN Mapped](screenshots/18-entra-role-arn-claim-configured.png)
 
-**Step 19 - SSO Success - AWS Console via Entra ID Login**
+**Step 18 - AWS Console Access After SSO Flow**
 ![SSO Success](screenshots/19-aws-console-sso-login-success.png)
 
-**Step 20 - Entra ID SSO Test Panel**
+**Step 19 - Entra ID SSO Test Panel**
 ![SSO Test](screenshots/20-entra-sso-test-panel.png)
 
 ---
