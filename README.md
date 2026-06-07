@@ -63,7 +63,7 @@ It does **not** claim a full AWS IAM Identity Center multi-account rollout. Some
 
 This flow shows the lab federation path from user sign-in through Entra ID, SAML assertion issuance, AWS IAM trust validation, role assumption, and AWS Console access.
 
-[View interactive HTML version](docs/entra-aws-saml-authentication-flow.html)
+[View interactive HTML version](https://rahatislamanik-spec.github.io/EntraID-AWS-SAML-SSO-Integration/docs/entra-aws-saml-authentication-flow.html)
 
 ```
 User opens AWS in their browser
