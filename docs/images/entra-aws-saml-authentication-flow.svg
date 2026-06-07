@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="386" viewBox="0 0 1200 386" role="img" aria-labelledby="title desc">
+<title id="title">Entra ID to AWS SAML Flow</title>
+<desc id="desc">Federated sign-in from Microsoft Entra ID to AWS IAM role assumption</desc>
+<rect width="100%" height="100%" fill="#eef3f8"/>
+<rect x="30" y="30" width="1140" height="326" rx="16" fill="#ffffff" stroke="#d5deea"/>
+<text x="600.0" y="78" text-anchor="middle" font-family="Segoe UI, Arial" font-size="32" font-weight="700" fill="#172033">Entra ID to AWS SAML Flow</text>
+<text x="600.0" y="108" text-anchor="middle" font-family="Segoe UI, Arial" font-size="16" fill="#53647c">Federated sign-in from Microsoft Entra ID to AWS IAM role assumption</text>
+<rect x="60" y="140" width="252" height="112" rx="10" fill="#2563a6" stroke="#1d4f86" stroke-width="2"/>
+<text x="186.0" y="174" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" font-weight="700" fill="#ffffff">User Opens AWS</text>
+<text x="186.0" y="202" text-anchor="middle" font-family="Segoe UI, Arial" font-size="14" fill="#ffffff">Browser starts AWS SAML</text>
+<text x="186.0" y="222" text-anchor="middle" font-family="Segoe UI, Arial" font-size="14" fill="#ffffff">sign-in path</text>
+<rect x="336" y="140" width="252" height="112" rx="10" fill="#f1fbf8" stroke="#6f8fc0" stroke-width="2"/>
+<text x="462.0" y="174" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" font-weight="700" fill="#172033">Entra ID Authenticates</text>
+<text x="462.0" y="202" text-anchor="middle" font-family="Segoe UI, Arial" font-size="14" fill="#53647c">User signs in and receives a</text>
+<text x="462.0" y="222" text-anchor="middle" font-family="Segoe UI, Arial" font-size="14" fill="#53647c">signed SAML assertion</text>
+<rect x="612" y="140" width="252" height="112" rx="10" fill="#fff9e8" stroke="#6f8fc0" stroke-width="2"/>
+<text x="738.0" y="174" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" font-weight="700" fill="#172033">AWS Validates Trust</text>
+<text x="738.0" y="202" text-anchor="middle" font-family="Segoe UI, Arial" font-size="14" fill="#53647c">AWS IAM validates metadata,</text>
+<text x="738.0" y="222" text-anchor="middle" font-family="Segoe UI, Arial" font-size="14" fill="#53647c">certificate, and role claim</text>
+<text x="738.0" y="242" text-anchor="middle" font-family="Segoe UI, Arial" font-size="14" fill="#53647c">mapping</text>
+<rect x="888" y="140" width="252" height="112" rx="10" fill="#fff5f4" stroke="#6f8fc0" stroke-width="2"/>
+<text x="1014.0" y="174" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" font-weight="700" fill="#172033">AWS Role Session</text>
+<text x="1014.0" y="202" text-anchor="middle" font-family="Segoe UI, Arial" font-size="14" fill="#53647c">User assumes</text>
+<text x="1014.0" y="222" text-anchor="middle" font-family="Segoe UI, Arial" font-size="14" fill="#53647c">EntraID-ReadOnly role</text>
+<text x="1014.0" y="242" text-anchor="middle" font-family="Segoe UI, Arial" font-size="14" fill="#53647c">without separate AWS</text>
+<rect x="60" y="308" width="1080" height="38" rx="8" fill="#172033"/>
+<text x="600.0" y="333" text-anchor="middle" font-family="Segoe UI, Arial" font-size="14" fill="#ffffff">Single-account SAML lab flow - not AWS IAM Identity Center multi-account rollout.</text>
+</svg>
