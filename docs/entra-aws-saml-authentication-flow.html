@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entra ID to AWS SAML Authentication Flow</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { min-height: 100vh; padding: 32px; background: #eef3f8; color: #172033; font-family: "Segoe UI", Calibri, Arial, sans-serif; }
+        .container { max-width: 1120px; margin: 0 auto; padding: 34px; background: #fff; border: 1px solid #d5deea; border-radius: 10px; box-shadow: 0 16px 42px rgba(23,32,51,.12); }
+        .back-link { display: inline-block; margin-bottom: 22px; color: #2563a6; font-size: 14px; font-weight: 700; text-decoration: none; }
+        header { margin-bottom: 28px; text-align: center; }
+        h1 { margin-bottom: 10px; font-size: 30px; line-height: 1.2; }
+        .subtitle { color: #53647c; line-height: 1.5; }
+        .note { max-width: 860px; margin: 18px auto 0; padding: 14px 16px; background: #f7faff; border: 1px solid #d5deea; border-left: 4px solid #2563a6; border-radius: 6px; color: #36455c; font-size: 14px; line-height: 1.5; text-align: left; }
+        .flow { display: grid; gap: 14px; margin-top: 26px; }
+        .step { display: grid; grid-template-columns: 170px 1fr; gap: 16px; align-items: stretch; }
+        .actor { padding: 16px; border-radius: 8px; background: #172033; color: #fff; font-weight: 800; text-align: center; display: grid; place-items: center; }
+        .box { padding: 16px 18px; background: #fff; border: 2px solid #6f8fc0; border-radius: 8px; box-shadow: 0 3px 10px rgba(37,99,166,.12); font-weight: 700; line-height: 1.4; }
+        .box small { display: block; margin-top: 5px; color: #53647c; font-size: 12px; font-weight: 500; }
+        .box.idp { background: #f4f8fd; border-color: #315c9f; }
+        .box.sp { background: #fff9e8; border-color: #d5a51d; }
+        .box.success { background: #f1fbf8; border-color: #3d9987; }
+        .arrow { width: 3px; height: 18px; margin-left: 84px; background: #2563a6; position: relative; }
+        .arrow:after { content: ""; position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%); border-left: 7px solid transparent; border-right: 7px solid transparent; border-top: 10px solid #2563a6; }
+        .controls { margin-top: 26px; padding: 18px; background: #f8fbff; border: 1px solid #cbd7e7; border-radius: 8px; }
+        .controls h2 { margin-bottom: 12px; font-size: 18px; }
+        .controls ul { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px 18px; list-style: none; color: #36455c; font-size: 14px; line-height: 1.45; }
+        .controls li { position: relative; padding-left: 20px; }
+        .controls li:before { content: ">"; position: absolute; left: 0; color: #2563a6; font-weight: 800; }
+        @media (max-width: 760px) {
+            body { padding: 18px; }
+            .container { padding: 24px; }
+            h1 { font-size: 24px; }
+            .step { grid-template-columns: 1fr; }
+            .arrow { margin: 0 auto; }
+            .controls ul { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <a class="back-link" href="../README.md">Back to Entra ID and AWS SAML case study</a>
+        <header>
+            <h1>Entra ID to AWS SAML Authentication Flow</h1>
+            <p class="subtitle">Federated sign-in path from Microsoft Entra ID to AWS IAM role assumption</p>
+            <p class="note">This diagram summarizes the lab SAML flow documented in the repository. It does not claim a production multi-account AWS IAM Identity Center rollout.</p>
+        </header>
+
+        <section class="flow" aria-label="SAML authentication flow">
+            <div class="step"><div class="actor">User</div><div class="box">User opens AWS access path<small>Browser starts the AWS SSO/SAML sign-in journey.</small></div></div>
+            <div class="arrow"></div>
+            <div class="step"><div class="actor">AWS</div><div class="box sp">AWS redirects user to Microsoft Entra ID<small>AWS trusts Entra ID as the configured SAML identity provider.</small></div></div>
+            <div class="arrow"></div>
+            <div class="step"><div class="actor">Entra ID</div><div class="box idp">User authenticates and satisfies identity controls<small>Credential verification, MFA or Conditional Access would be evaluated here in production.</small></div></div>
+            <div class="arrow"></div>
+            <div class="step"><div class="actor">Entra ID</div><div class="box idp">Signed SAML assertion is generated<small>Assertion includes user identity and AWS role ARN claim mapping.</small></div></div>
+            <div class="arrow"></div>
+            <div class="step"><div class="actor">Browser</div><div class="box">Assertion is posted to AWS ACS endpoint<small>ACS URL: https://signin.aws.amazon.com/saml</small></div></div>
+            <div class="arrow"></div>
+            <div class="step"><div class="actor">AWS IAM</div><div class="box sp">AWS validates signature and trust<small>IAM SAML provider uses Entra federation metadata and token signing certificate.</small></div></div>
+            <div class="arrow"></div>
+            <div class="step"><div class="actor">AWS STS</div><div class="box sp">Federated role session is issued<small>User assumes the EntraID-ReadOnly role without separate long-term AWS user credentials.</small></div></div>
+            <div class="arrow"></div>
+            <div class="step"><div class="actor">AWS Console</div><div class="box success">Access granted through federated role<small>CloudTrail validation and deprovisioning tests are listed as future evidence.</small></div></div>
+        </section>
+
+        <section class="controls">
+            <h2>Reviewer Notes</h2>
+            <ul>
+                <li>Entra ID is the identity provider and AWS IAM is the service provider.</li>
+                <li>Access is centralized through Entra assignment and SAML role claim mapping.</li>
+                <li>AWS long-term user credentials are avoided for the federated console path.</li>
+                <li>Production assurance would require Conditional Access, deprovisioning, CloudTrail, and role governance evidence.</li>
+            </ul>
+        </section>
+    </main>
+</body>
+</html>

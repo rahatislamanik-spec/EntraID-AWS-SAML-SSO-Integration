@@ -59,6 +59,8 @@ It does **not** claim a full AWS IAM Identity Center multi-account rollout. Some
 
 ## How the SSO Flow Works
 
+For a visual reviewer-friendly version of this path, see the [Entra ID to AWS SAML authentication flow diagram](docs/entra-aws-saml-authentication-flow.html).
+
 ```
 User opens AWS in their browser
          |
