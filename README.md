@@ -1,4 +1,5 @@
 # Microsoft Entra ID to AWS SAML 2.0 SSO Integration
+> **Status:** Portfolio Complete — v1.0
 
 > **Configured and tested in lab** — SAML SSO federation between Microsoft Entra ID and AWS Single-Account Access, documented as a self-directed identity and cloud access case study.
 
