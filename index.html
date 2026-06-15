@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entra ID → AWS SAML 2.0 SSO Integration | Md Rahat Islam Anik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Crimson+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #2A2420;
+    --parchment: #F5EDE0;
+    --parchment-deep: #EDE3D0;
+    --hairline: #D8CBB0;
+
+    --green: #1B3A2B;
+    --green-deep: #0F2419;
+    --green-bg: #E7EEE6;
+    --green-line: #C3D2C6;
+
+    --gold: #C9A227;
+    --gold-bright: #E8C766;
+    --gold-bg: #FBF3DD;
+    --gold-line: #E6D6A6;
+
+    --display: 'Cinzel', serif;
+    --mono: 'IBM Plex Mono', monospace;
+    --body: 'Crimson Pro', serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--body);
+    color: var(--ink);
+    background: var(--parchment);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    font-size: 1.05rem;
+  }
+
+  a { color: var(--green-deep); text-decoration: none; border-bottom: 1px solid var(--gold); }
+  a:hover { color: var(--gold); border-bottom-color: var(--green-deep); }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+  img { max-width: 100%; display: block; border-radius: 4px; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* ============ TOP STATUS BAR ============ */
+  .status-bar {
+    background: var(--green-deep);
+    color: var(--gold-bright);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    padding: 10px 0;
+    border-bottom: 2px solid var(--gold);
+  }
+  .status-bar .wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .status-pill { display: inline-flex; align-items: center; gap: 8px; }
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold-bright);
+    box-shadow: 0 0 0 3px rgba(232,199,102,0.18);
+  }
+  .status-bar .meta { color: #8FAE9A; }
+
+  /* ============ HERO ============ */
+  .hero {
+    padding: 88px 0 70px;
+    position: relative;
+    overflow: hidden;
+    background: var(--green-deep);
+    color: var(--parchment);
+    border-bottom: 4px double var(--gold);
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 85% 20%, rgba(201,162,39,0.10), transparent 60%),
+      repeating-linear-gradient(135deg, rgba(232,199,102,0.025) 0 2px, transparent 2px 28px);
+    z-index: 0;
+    pointer-events: none;
+  }
+  .hero .wrap { position: relative; z-index: 1; }
+
+  .hero-crest {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  .hero-crest svg { width: 34px; height: 34px; flex-shrink: 0; }
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-bright);
+  }
+
+  .hero h1 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(2rem, 4.6vw, 3.3rem);
+    line-height: 1.25;
+    letter-spacing: 0.01em;
+    max-width: 22ch;
+    color: var(--parchment);
+  }
+  .hero h1 .gold-word { color: var(--gold-bright); }
+  .hero h1 .sigil-divider {
+    display: block;
+    font-family: var(--mono);
+    font-weight: 400;
+    color: #6E8C7B;
+    font-size: 0.5em;
+    letter-spacing: 0.3em;
+    margin: 14px 0;
+  }
+
+  .hero-sub {
+    margin-top: 24px;
+    max-width: 60ch;
+    color: #C9D6CD;
+    font-size: 1.08rem;
+  }
+
+  .hero-tags {
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+    padding: 6px 13px;
+    border-radius: 2px;
+    border: 1px solid #2E5340;
+    background: rgba(255,255,255,0.03);
+    color: #B8CCBE;
+  }
+  .tag.gold { border-color: var(--gold); color: var(--gold-bright); }
+
+  /* ============ SECTION HEADERS ============ */
+  section { padding: 64px 0; border-bottom: 1px solid var(--hairline); }
+  section:last-of-type { border-bottom: none; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+  }
+  .section-head h2 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(1.4rem, 2.8vw, 1.9rem);
+    color: var(--green-deep);
+    letter-spacing: 0.01em;
+  }
+  .section-side-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 11px;
+    border-radius: 2px;
+  }
+  .section-side-label.green { background: var(--green-bg); color: var(--green-deep); border: 1px solid var(--green-line); }
+  .section-side-label.gold { background: var(--gold-bg); color: #8A6A0F; border: 1px solid var(--gold-line); }
+  .section-side-label.shared { background: var(--parchment-deep); color: #6B5E4D; border: 1px solid var(--hairline); }
+
+  /* ============ SCENARIO ============ */
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+  .scenario-card {
+    padding: 26px;
+    border-radius: 4px;
+    border: 1px solid var(--hairline);
+  }
+  .scenario-card h3 {
+    font-family: var(--display);
+    font-size: 1.05rem;
+    margin-bottom: 12px;
+    color: var(--green-deep);
+    letter-spacing: 0.02em;
+  }
+  .scenario-card.problem { background: var(--gold-bg); border-color: var(--gold-line); }
+  .scenario-card.solution { background: var(--green-bg); border-color: var(--green-line); }
+  .scenario-card p { color: #5A4F40; }
+
+  .ztl {
+    margin-top: 26px;
+    font-family: var(--display);
+    font-style: normal;
+    font-size: 1.1rem;
+    font-weight: 500;
+    border-left: 3px solid var(--gold);
+    padding: 6px 0 6px 18px;
+    color: var(--green-deep);
+  }
+
+  /* ============ ARCHITECTURE SCOPE ============ */
+  .scope-list {
+    list-style: none;
+    counter-reset: scope;
+    display: grid;
+    gap: 0;
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .scope-list li {
+    counter-increment: scope;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 15px 18px;
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    background: #fff;
+    color: var(--ink);
+  }
+  .scope-list li:nth-child(even) { background: var(--parchment-deep); }
+  .scope-list li::before {
+    content: counter(scope, upper-roman);
+    flex-shrink: 0;
+    min-width: 30px; height: 26px;
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.74rem;
+    background: var(--green-deep);
+    color: var(--gold-bright);
+    font-family: var(--mono);
+    padding: 0 4px;
+  }
+  .scope-note {
+    margin-top: 18px;
+    font-size: 0.94rem;
+    color: #6B5E4D;
+    border-left: 3px solid var(--green);
+    padding: 4px 0 4px 18px;
+  }
+
+  /* ============ THE BRIDGE (signature flow diagram) ============ */
+  .bridge-section { padding-bottom: 84px; }
+  .bridge-frame {
+    position: relative;
+    border: 1px solid var(--hairline);
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 4px 24px rgba(15,36,25,0.06);
+  }
+  .bridge-halves {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .bridge-half {
+    padding: 30px 30px 38px;
+    position: relative;
+  }
+  .bridge-half.left { background: var(--green-bg); }
+  .bridge-half.right { background: var(--gold-bg); }
+  .bridge-half-label {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 0.86rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .bridge-half.left .bridge-half-label { color: var(--green-deep); }
+  .bridge-half.right .bridge-half-label { color: #8A6A0F; }
+
+  .bridge-steps {
+    list-style: none;
+    counter-reset: bstep;
+    display: grid;
+    gap: 12px;
+  }
+  .bridge-steps li {
+    counter-increment: bstep;
+    display: flex;
+    gap: 13px;
+    align-items: flex-start;
+    font-size: 0.95rem;
+    color: var(--ink);
+  }
+  .bridge-steps li::before {
+    content: counter(bstep);
+    flex-shrink: 0;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--parchment);
+    margin-top: 1px;
+  }
+  .bridge-half.left .bridge-steps li::before { background: var(--green-deep); }
+  .bridge-half.right .bridge-steps li::before { background: var(--gold); color: var(--green-deep); }
+
+  .bridge-seam {
+    position: relative;
+    width: 100%;
+    height: 0;
+  }
+  .bridge-seam svg {
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: calc(100% + 2px);
+  }
+
+  .bridge-result {
+    border-top: 1px solid var(--hairline);
+    padding: 22px 30px;
+    background: var(--parchment);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 0.98rem;
+    color: var(--ink);
+  }
+  .bridge-result .badge {
+    flex-shrink: 0;
+    background: var(--green-deep);
+    color: var(--gold-bright);
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    padding: 5px 11px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ============ TWO-COLUMN BUILD DETAIL ============ */
+  .build-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--hairline);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .build-col { padding: 30px; }
+  .build-col.green-col { background: var(--green-bg); border-right: 1px solid var(--green-line); }
+  .build-col.gold-col { background: var(--gold-bg); }
+  .build-col h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.12rem;
+    margin-bottom: 4px;
+    letter-spacing: 0.02em;
+  }
+  .build-col.green-col h3 { color: var(--green-deep); }
+  .build-col.gold-col h3 { color: #8A6A0F; }
+  .build-col .role {
+    font-family: var(--mono);
+    font-size: 0.76rem;
+    color: #7A6E5C;
+    margin-bottom: 20px;
+    display: block;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .build-col ul { list-style: none; display: grid; gap: 11px; }
+  .build-col li {
+    font-size: 0.96rem;
+    padding-left: 22px;
+    position: relative;
+    color: var(--ink);
+  }
+  .build-col li::before {
+    content: "❧";
+    position: absolute;
+    left: 0;
+    font-size: 0.95em;
+    line-height: 1.5;
+  }
+  .green-col li::before { color: var(--green-deep); }
+  .gold-col li::before { color: var(--gold); }
+  .build-col li .sub {
+    display: block;
+    color: #7A6E5C;
+    font-size: 0.86rem;
+    margin-top: 3px;
+  }
+  .build-col code {
+    font-family: var(--mono);
+    font-size: 0.85em;
+    background: rgba(15,36,25,0.06);
+    padding: 1px 5px;
+    border-radius: 2px;
+  }
+
+  /* ============ TECH STACK TABLE ============ */
+  table.stack {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.96rem;
+  }
+  table.stack th, table.stack td {
+    text-align: left;
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  table.stack th {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8A7A5F;
+  }
+  table.stack td:first-child { color: #6B5E4D; width: 38%; }
+  table.stack td:last-child { font-weight: 600; color: var(--green-deep); }
+
+  /* ============ KEY CONCEPTS ============ */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+  .concept {
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+    padding: 20px 22px;
+    background: #fff;
+  }
+  .concept h4 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: var(--green-deep);
+    letter-spacing: 0.02em;
+  }
+  .concept p { color: #6B5E4D; font-size: 0.92rem; }
+
+  /* ============ VALIDATION TABLE ============ */
+  table.validation {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  table.validation th, table.validation td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--hairline);
+    text-align: left;
+  }
+  table.validation th {
+    background: var(--green-deep);
+    color: var(--gold-bright);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  table.validation tr td { background: #fff; }
+  table.validation tr:nth-child(even) td { background: var(--parchment-deep); }
+  table.validation tr:last-child td { border-bottom: none; }
+  .status-chip {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    padding: 3px 10px;
+    border-radius: 100px;
+    display: inline-block;
+  }
+  .status-chip.configured { background: var(--green-bg); color: var(--green-deep); }
+  .status-chip.tested { background: var(--gold-bg); color: #8A6A0F; }
+  .status-chip.not-evidenced { background: var(--parchment-deep); color: #8A7A5F; }
+  .status-chip.not-claimed { background: #F0E4E0; color: #8A4A3A; }
+
+  /* ============ SCREENSHOTS ============ */
+  .shot-groups { display: grid; gap: 38px; }
+  .shot-group h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.08rem;
+    margin-bottom: 18px;
+    color: var(--green-deep);
+    letter-spacing: 0.02em;
+  }
+  .shot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .shot-card {
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .shot-placeholder {
+    aspect-ratio: 16/10;
+    background: repeating-linear-gradient(135deg, var(--parchment-deep) 0 10px, #F9F4E9 10px 20px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    color: #8A7A5F;
+    text-align: center;
+    padding: 8px;
+  }
+  .shot-card figcaption {
+    padding: 11px 13px;
+    font-size: 0.85rem;
+    color: #6B5E4D;
+    border-top: 1px solid var(--hairline);
+  }
+  .shot-card figcaption strong { color: var(--green-deep); display: block; font-size: 0.88rem; font-family: var(--display); font-weight: 600; }
+
+  /* ============ WHAT'S NEXT ============ */
+  .next-list { list-style: none; display: grid; gap: 12px; }
+  .next-list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 15px 18px;
+    border: 1px dashed var(--hairline);
+    border-radius: 4px;
+    font-size: 0.96rem;
+    background: #fff;
+  }
+  .next-list li::before {
+    content: "✦";
+    color: var(--gold);
+    font-size: 0.85rem;
+    margin-top: 3px;
+  }
+
+  /* ============ SECURITY NOTE ============ */
+  .security-note {
+    background: var(--green-deep);
+    color: var(--parchment);
+    border-radius: 4px;
+    border: 1px solid var(--gold);
+    padding: 26px 30px;
+    font-size: 0.96rem;
+  }
+  .security-note .label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold-bright);
+    margin-bottom: 12px;
+    display: block;
+  }
+  .security-note p { color: #C9D6CD; }
+
+  /* ============ FOOTER ============ */
+  footer { padding: 50px 0 70px; background: var(--green-deep); color: var(--parchment); border-top: 4px double var(--gold); }
+  .footer-grid {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: flex-end;
+  }
+  footer h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: var(--gold-bright);
+    letter-spacing: 0.02em;
+  }
+  footer .role-line {
+    font-family: var(--mono);
+    font-size: 0.84rem;
+    color: #9AB6A7;
+    margin-top: 8px;
+  }
+  .footer-links {
+    display: flex;
+    gap: 22px;
+    font-family: var(--mono);
+    font-size: 0.84rem;
+  }
+  .footer-links a { color: #B8CCBE; border-bottom-color: #2E5340; }
+  .footer-links a:hover { color: var(--gold-bright); border-bottom-color: var(--gold); }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 760px) {
+    .scenario-grid, .build-grid, .concept-grid { grid-template-columns: 1fr; }
+    .build-col.green-col { border-right: none; border-bottom: 1px solid var(--green-line); }
+    .bridge-halves { grid-template-columns: 1fr; }
+    .bridge-seam { display: none; }
+    table.stack, table.validation { font-size: 0.85rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="status-bar">
+  <div class="wrap">
+    <span class="status-pill"><span class="status-dot"></span> STATUS: PORTFOLIO COMPLETE — v1.0</span>
+    <span class="meta">SELF-DIRECTED LAB · NOT A PRODUCTION DEPLOYMENT</span>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-crest">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M24 4 L42 12 V26 C42 36 34 42 24 44 C14 42 6 36 6 26 V12 Z" stroke="#E8C766" stroke-width="1.5" fill="rgba(232,199,102,0.06)"/>
+        <path d="M24 12 C18 16 14 22 14 28 C14 33 18 36 24 36 C30 36 34 33 34 28 C34 22 30 16 24 12 Z" fill="#E8C766" opacity="0.85"/>
+        <path d="M24 16 C20 19 17 23 17 27 C17 30 20 32 24 32 C28 32 31 30 31 27 C31 23 28 19 24 16 Z" fill="#0F2419"/>
+      </svg>
+      <p class="hero-eyebrow">House Hightower · Identity &amp; Cloud Access Case Study</p>
+    </div>
+    <h1>Microsoft Entra ID <span class="gold-word">— SAML 2.0 —</span> AWS IAM<span class="sigil-divider">⸻ A federation of two realms ⸻</span></h1>
+    <p class="hero-sub">A federated single sign-on lab connecting Microsoft 365 identities to Amazon Web Services console access — one identity provider, one signed assertion, one trusted IAM role. Documented as a Zero Trust identity case study for regulated, multi-cloud environments.</p>
+    <div class="hero-tags">
+      <span class="tag gold">Microsoft Entra ID</span>
+      <span class="tag gold">AWS IAM</span>
+      <span class="tag">SAML 2.0</span>
+      <span class="tag">Zero Trust</span>
+      <span class="tag">Cross-Cloud Federation</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- SCENARIO -->
+  <section id="scenario">
+    <div class="section-head">
+      <h2>The Scenario</h2>
+      <span class="section-side-label shared">Context</span>
+    </div>
+    <p style="max-width:68ch; color:#6B5E4D; margin-bottom:24px;">
+      A growing fintech company runs its internal tools and user identities on Microsoft 365 and Entra ID, but its engineering and DevOps teams also need access to AWS for cloud infrastructure work.
+    </p>
+    <div class="scenario-grid">
+      <div class="scenario-card problem">
+        <h3>The Problem</h3>
+        <p>Managing separate AWS usernames and passwords for every engineer is a security risk. When someone leaves the company, IT has to remember to remove them from AWS separately — if they forget, that's an open door.</p>
+      </div>
+      <div class="scenario-card solution">
+        <h3>The Solution</h3>
+        <p>Federate AWS access through Entra ID using SAML 2.0 SSO. Engineers authenticate with Microsoft credentials, and AWS trusts the signed SAML assertion from Entra ID — reducing separate AWS passwords, lowering orphaned-account risk, and centralizing sign-in evidence.</p>
+      </div>
+    </div>
+    <p class="ztl">"This is Zero Trust in practice — identity is the perimeter."</p>
+  </section>
+
+  <!-- ARCHITECTURE SCOPE -->
+  <section id="scope">
+    <div class="section-head">
+      <h2>Architecture Scope</h2>
+      <span class="section-side-label shared">Boundaries</span>
+    </div>
+    <p style="color:#6B5E4D; max-width:68ch; margin-bottom:20px;">
+      This repository demonstrates the AWS Single-Account Access enterprise application pattern in Microsoft Entra ID with AWS IAM SAML role federation — not a full AWS IAM Identity Center multi-account rollout.
+    </p>
+    <ol class="scope-list">
+      <li>Microsoft Entra ID enterprise application</li>
+      <li>SAML-based sign-on configuration</li>
+      <li>AWS IAM SAML identity provider</li>
+      <li>AWS IAM role trust relationship</li>
+      <li>Entra ID role claim mapping</li>
+      <li>AWS console access through federated role assumption</li>
+    </ol>
+    <p class="scope-note">Some AWS console screens reference IAM Identity Center guidance because AWS surfaces related identity options in the console — that guidance is shown as context, not as the implementation path documented here.</p>
+  </section>
+
+  <!-- THE BRIDGE -->
+  <section id="flow" class="bridge-section">
+    <div class="section-head">
+      <h2>How the SSO Flow Works</h2>
+      <span class="section-side-label shared">The Pact Between Realms</span>
+    </div>
+    <p style="color:#6B5E4D; max-width:68ch; margin-bottom:24px;">
+      One sign-in event crosses two cloud platforms. The left half happens entirely inside Entra ID; the right half happens entirely inside AWS IAM. The only thing that crosses the seam is a signed SAML assertion — the sealed letter passed between two houses.
+    </p>
+
+    <div class="bridge-frame">
+      <div class="bridge-halves">
+        <div class="bridge-half left">
+          <div class="bridge-half-label">Microsoft Entra ID · Identity Provider</div>
+          <ol class="bridge-steps">
+            <li>User opens AWS in their browser and is redirected to Entra ID login</li>
+            <li>User authenticates with password + MFA (if required)</li>
+            <li>Entra ID generates a signed SAML assertion containing the user's identity and assigned AWS role ARN</li>
+            <li>Assertion is posted to the AWS Assertion Consumer Service (ACS) URL</li>
+          </ol>
+        </div>
+        <div class="bridge-seam" aria-hidden="true">
+          <svg viewBox="0 0 100 260" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="50" y1="0" x2="50" y2="260" stroke="#C9A227" stroke-width="1.5" stroke-dasharray="1 7"/>
+            <circle cx="50" cy="62" r="6" fill="#1B3A2B"/>
+            <g transform="translate(50,135)">
+              <rect x="-14" y="-10" width="28" height="20" rx="2" fill="#FBF3DD" stroke="#C9A227" stroke-width="1.5"/>
+              <circle cx="0" cy="0" r="3.5" fill="#C9A227"/>
+            </g>
+            <circle cx="50" cy="200" r="6" fill="#C9A227"/>
+            <text x="50" y="118" transform="rotate(-90 50 135)" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#8A7A5F" letter-spacing="1.5">SAML ASSERTION</text>
+          </svg>
+        </div>
+        <div class="bridge-half right">
+          <div class="bridge-half-label">AWS IAM · Service Provider</div>
+          <ol class="bridge-steps">
+            <li>AWS validates the assertion's signature against the registered EntraID metadata</li>
+            <li>User assumes the <code>EntraID-ReadOnly</code> IAM role named in the assertion</li>
+            <li>AWS Console opens — no separate AWS credentials used</li>
+            <li>Role path is recorded as <code>EntraID-ReadOnly/user@example.com</code></li>
+          </ol>
+        </div>
+      </div>
+      <div class="bridge-result">
+        <span class="badge">Result</span>
+        <span>User authenticated through Entra ID and landed directly in the AWS Console — one identity, no second password.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT WAS BUILT -->
+  <section id="build">
+    <div class="section-head">
+      <h2>What Was Built</h2>
+      <span class="section-side-label shared">Configuration</span>
+    </div>
+    <div class="build-grid">
+      <div class="build-col green-col">
+        <h3>Microsoft Entra ID</h3>
+        <span class="role">Identity Provider</span>
+        <ul>
+          <li>Added <strong>AWS Single-Account Access</strong> as an Enterprise Application</li>
+          <li>Configured SAML 2.0 settings via the Entra gallery workflow
+            <span class="sub">Identifier / Entity ID fixed by AWS gallery · Reply URL (ACS): <code>https://signin.aws.amazon.com/saml</code></span>
+          </li>
+          <li>Mapped user attributes into the SAML assertion
+            <span class="sub">UPN as unique identifier · given name, surname, email · Role ARN mapped to the AWS IAM role</span>
+          </li>
+          <li>Set session duration to <strong>900 seconds</strong> for shorter federated sessions</li>
+          <li>Managed the token signing certificate lifecycle
+            <span class="sub">RS256, expires 2029</span>
+          </li>
+          <li>Assigned users to the application for access control</li>
+          <li>Exported Federation Metadata XML for AWS trust configuration</li>
+        </ul>
+      </div>
+      <div class="build-col gold-col">
+        <h3>Amazon Web Services</h3>
+        <span class="role">Service Provider</span>
+        <ul>
+          <li>Registered EntraID as a trusted SAML 2.0 identity provider in AWS IAM</li>
+          <li>Uploaded the Federation Metadata XML to establish cryptographic trust</li>
+          <li>Created the <code>EntraID-ReadOnly</code> IAM role with a SAML 2.0 federation trust policy</li>
+          <li>Mapped the full Role ARN back into Entra ID attribute claims</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- RELEVANCE -->
+  <section id="relevance">
+    <div class="section-head">
+      <h2>Relevance to Regulated Industries</h2>
+      <span class="section-side-label shared">Why It Matters</span>
+    </div>
+    <p style="color:#6B5E4D; max-width:70ch; margin-bottom:14px;">
+      In Canadian financial institutions operating under <strong style="color:var(--green-deep);">OSFI E-21</strong> and FINTRAC expectations, cross-platform identity federation is a common control pattern for reducing unmanaged access. When engineering and DevOps teams access AWS using separate credentials, the organization faces three risks: orphaned accounts when staff leave, split audit trails across two platforms, and inconsistent MFA or Conditional Access enforcement.
+    </p>
+    <p style="color:#6B5E4D; max-width:70ch;">
+      Federating AWS access through Entra ID addresses these risks by making Entra ID the front door for authentication. A production rollout would still need assignment removal, Conditional Access, session lifetime, AWS role trust, and CloudTrail monitoring validated together — this lab demonstrates the federation path and documents the next evidence needed for production-grade assurance.
+    </p>
+  </section>
+
+  <!-- TECH STACK -->
+  <section id="stack">
+    <div class="section-head">
+      <h2>Tech Stack</h2>
+      <span class="section-side-label shared">Components</span>
+    </div>
+    <table class="stack">
+      <thead>
+        <tr><th>Component</th><th>Technology</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Identity Provider (IdP)</td><td>Microsoft Entra ID (Azure AD)</td></tr>
+        <tr><td>Service Provider (SP)</td><td>Amazon Web Services IAM</td></tr>
+        <tr><td>Federation Protocol</td><td>SAML 2.0</td></tr>
+        <tr><td>Role Mapping</td><td>IAM Role ARN via SAML attribute claim</td></tr>
+        <tr><td>Certificate</td><td>RS256 Token Signing Certificate</td></tr>
+        <tr><td>Access Policy</td><td>AWS ReadOnlyAccess (managed)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- KEY CONCEPTS -->
+  <section id="concepts">
+    <div class="section-head">
+      <h2>Key Concepts Demonstrated</h2>
+      <span class="section-side-label shared">Principles</span>
+    </div>
+    <div class="concept-grid">
+      <div class="concept">
+        <h4>SAML 2.0 Federation</h4>
+        <p>The industry standard for enterprise SSO between cloud platforms.</p>
+      </div>
+      <div class="concept">
+        <h4>Zero Trust Identity</h4>
+        <p>No implicit trust — every access request verified through the central identity provider.</p>
+      </div>
+      <div class="concept">
+        <h4>Least Privilege Access</h4>
+        <p>ReadOnlyAccess policy grants the minimum required permissions.</p>
+      </div>
+      <div class="concept">
+        <h4>Certificate Lifecycle Management</h4>
+        <p>Token signing certificate tracked with expiry monitoring.</p>
+      </div>
+      <div class="concept">
+        <h4>Attribute-Based Access Control</h4>
+        <p>AWS role assignment driven directly by Entra ID attribute claims.</p>
+      </div>
+      <div class="concept">
+        <h4>Audit Trail</h4>
+        <p>Identity-provider sign-in evidence is centralized in Entra ID; AWS-side CloudTrail evidence is a planned validation item.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALIDATION BOUNDARIES -->
+  <section id="validation">
+    <div class="section-head">
+      <h2>Validation Boundaries</h2>
+      <span class="section-side-label shared">Status</span>
+    </div>
+    <table class="validation">
+      <thead>
+        <tr><th>Area</th><th>Status</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Entra enterprise application</td><td><span class="status-chip configured">Configured</span></td><td>AWS Single-Account Access application shown in Entra ID</td></tr>
+        <tr><td>SAML sign-on settings</td><td><span class="status-chip configured">Configured</span></td><td>AWS gallery workflow and ACS URL documented</td></tr>
+        <tr><td>AWS IAM identity provider</td><td><span class="status-chip configured">Configured</span></td><td>AWS IAM SAML provider and trust path shown</td></tr>
+        <tr><td>AWS IAM role</td><td><span class="status-chip configured">Configured</span></td><td>ReadOnlyAccess role created for federated access</td></tr>
+        <tr><td>Federated console access</td><td><span class="status-chip tested">Tested</span></td><td>AWS console access shown after SSO flow</td></tr>
+        <tr><td>Conditional Access / MFA policy</td><td><span class="status-chip not-evidenced">Not evidenced</span></td><td>Future enhancement</td></tr>
+        <tr><td>Deprovisioning test</td><td><span class="status-chip not-evidenced">Not evidenced</span></td><td>Future enhancement</td></tr>
+        <tr><td>CloudTrail sign-in evidence</td><td><span class="status-chip not-evidenced">Not evidenced</span></td><td>Future enhancement</td></tr>
+        <tr><td>Production deployment</td><td><span class="status-chip not-claimed">Not claimed</span></td><td>Self-directed lab case study</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- SCREENSHOTS -->
+  <section id="evidence">
+    <div class="section-head">
+      <h2>Build Evidence</h2>
+      <span class="section-side-label shared">Screenshots</span>
+    </div>
+    <div class="shot-groups">
+      <div class="shot-group">
+        <h3>Entra ID Configuration</h3>
+        <div class="shot-grid">
+          <figure class="shot-card"><div class="shot-placeholder">Step 1 · Entra tenant &amp; admin context</div><figcaption><strong>SAML setup entry point</strong>Tenant overview before configuration begins</figcaption></figure>
+          <figure class="shot-card"><div class="shot-placeholder">Step 2 · Enterprise Applications view</div><figcaption><strong>Basic SAML config</strong>AWS Single-Account Access application added</figcaption></figure>
+          <figure class="shot-card"><div class="shot-placeholder">Step 3 · App gallery</div><figcaption><strong>Entity ID &amp; Reply URL</strong>Browsed via Microsoft Entra App Gallery</figcaption></figure>
+          <figure class="shot-card"><div class="shot-placeholder">Step 4 · Application overview</div><figcaption><strong>Attribute claims</strong>AWS Single-Account Access app overview</figcaption></figure>
+          <figure class="shot-card"><div class="shot-placeholder">Step 5 · Users &amp; groups</div><figcaption><strong>Token certificate</strong>Assignment view with signing certificate</figcaption></figure>
+          <figure class="shot-card"><div class="shot-placeholder">Step 6 · SAML overview</div><figcaption><strong>Save prompt &amp; claims</strong>SAML settings save confirmation</figcaption></figure>
+          <figure class="shot-card"><div class="shot-placeholder">Step 7 · Users &amp; groups section</div><figcaption><strong>Assignment screen</strong>Users and groups management view</figcaption></figure>
+          <figure class="shot-card"><div class="shot-placeholder">Step 8 · IAM Identity Center guidance</div><figcaption><strong>User assigned</strong>AWS-surfaced guidance screen</figcaption></figure>
+          <figure class="shot-card"><div class="shot-placeholder">Step 9 · Assignment confirmation</div><figcaption><strong>Confirmed</strong>Entra ID assignment confirmed</figcaption></figure>
+          <figure class="shot-card"><div class="shot-placeholder">Step 10 · Related services</div><figcaption><strong>Final config</strong>AWS IAM Identity Center related services screen</figcaption></figure>
+        </div>
+      </div>
+      <div class="shot-group">
+        <h3>AWS IAM Configuration</h3>
+        <div class="shot-grid">
+          <figure class="shot-card"><div class="shot-placeholder">Step 11 · AWS IAM dashboard</div><figcaption><strong>AWS IAM</strong>Dashboard entry point</figcaption></figure>
+          <figure class="shot-card"><div class="shot-placeholder">Step 12 · Identity provider created</div><figcaption><strong>Entra basic SAML config</strong>Identity provider registered in AWS IAM</figcaption></figure>
+          <figure class="shot-card"><div class="shot-placeholder">Step 13 · Create role</div><figcaption><strong>SAML federation</strong>Creating AWS role with SAML trust</figcaption></figure>
+          <figure class="shot-card"><div class="shot-placeholder">Step 14 · Policy attached</div><figcaption><strong>ReadOnly policy</strong>ReadOnlyAccess policy selected</figcaption></figure>
+          <figure class="shot-card"><div class="shot-placeholder">Step 15 · Role review</div><figcaption><strong>Role name &amp; review</strong>Final role configuration review</figcaption></figure>
+          <figure class="shot-card"><div class="shot-placeholder">Step 16 · Role created</div><figcaption><strong>EntraID-ReadOnly</strong>IAM role successfully created</figcaption></figure>
+        </div>
+      </div>
+      <div class="shot-group">
+        <h3>Final Configuration &amp; Proof</h3>
+        <div class="shot-grid">
+          <figure class="shot-card"><div class="shot-placeholder">Step 17 · Role claim mapping</div><figcaption><strong>Role ARN mapped</strong>Mapping completed in Entra ID</figcaption></figure>
+          <figure class="shot-card"><div class="shot-placeholder">Step 18 · Console access</div><figcaption><strong>SSO success</strong>AWS console access after SSO flow</figcaption></figure>
+          <figure class="shot-card"><div class="shot-placeholder">Step 19 · SSO test panel</div><figcaption><strong>SSO test</strong>Entra ID SSO test panel confirmation</figcaption></figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECURITY NOTE -->
+  <section id="security">
+    <div class="section-head">
+      <h2>Security Note</h2>
+      <span class="section-side-label shared">Disclosure</span>
+    </div>
+    <div class="security-note">
+      <span class="label">Federation metadata</span>
+      <p>The Federation Metadata XML used in this integration is not included in this repository. It contains tenant-specific configuration data — identity provider URLs, certificate information, and directory identifiers — that is not suitable for public repositories. Available on request.</p>
+    </div>
+  </section>
+
+  <!-- WHAT'S NEXT -->
+  <section id="next">
+    <div class="section-head">
+      <h2>What's Next</h2>
+      <span class="section-side-label shared">Roadmap</span>
+    </div>
+    <ul class="next-list">
+      <li>Add Conditional Access policy evidence for AWS access</li>
+      <li>Expand to multiple AWS roles based on Entra ID group membership</li>
+      <li>Automate user assignment via PowerShell and Microsoft Graph API</li>
+      <li>Add AWS CloudTrail evidence of federated sign-in events</li>
+      <li>Add deprovisioning validation showing assignment removal and session behavior</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <div class="footer-grid">
+    <div>
+      <h3>Md Rahat Islam Anik</h3>
+      <p class="role-line">Identity &amp; Cloud Operations Specialist · Toronto, Canada</p>
+    </div>
+    <div class="footer-links">
+      <a href="https://linkedin.com/in/rahatislamanik" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/rahatislamanik-spec" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://rahatislamanik-spec.github.io/IT-Portfolio-Rahat-Islam-Anik" target="_blank" rel="noopener">Portfolio</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
