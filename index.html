@@ -529,6 +529,14 @@
     text-align: center;
     padding: 8px;
   }
+
+  .shot-card img {
+    aspect-ratio: 16/10;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
   .shot-card figcaption {
     padding: 11px 13px;
     font-size: 0.85rem;
@@ -638,7 +646,7 @@
         <path d="M24 12 C18 16 14 22 14 28 C14 33 18 36 24 36 C30 36 34 33 34 28 C34 22 30 16 24 12 Z" fill="#E8C766" opacity="0.85"/>
         <path d="M24 16 C20 19 17 23 17 27 C17 30 20 32 24 32 C28 32 31 30 31 27 C31 23 28 19 24 16 Z" fill="#0F2419"/>
       </svg>
-      <p class="hero-eyebrow">House Hightower · Identity &amp; Cloud Access Case Study</p>
+      <p class="hero-eyebrow">Identity &amp; Cloud Access Case Study</p>
     </div>
     <h1>Microsoft Entra ID <span class="gold-word">— SAML 2.0 —</span> AWS IAM<span class="sigil-divider">⸻ A federation of two realms ⸻</span></h1>
     <p class="hero-sub">A federated single sign-on lab connecting Microsoft 365 identities to Amazon Web Services console access — one identity provider, one signed assertion, one trusted IAM role. Documented as a Zero Trust identity case study for regulated, multi-cloud environments.</p>
@@ -888,35 +896,35 @@
       <div class="shot-group">
         <h3>Entra ID Configuration</h3>
         <div class="shot-grid">
-          <figure class="shot-card"><div class="shot-placeholder">Step 1 · Entra tenant &amp; admin context</div><figcaption><strong>SAML setup entry point</strong>Tenant overview before configuration begins</figcaption></figure>
-          <figure class="shot-card"><div class="shot-placeholder">Step 2 · Enterprise Applications view</div><figcaption><strong>Basic SAML config</strong>AWS Single-Account Access application added</figcaption></figure>
-          <figure class="shot-card"><div class="shot-placeholder">Step 3 · App gallery</div><figcaption><strong>Entity ID &amp; Reply URL</strong>Browsed via Microsoft Entra App Gallery</figcaption></figure>
-          <figure class="shot-card"><div class="shot-placeholder">Step 4 · Application overview</div><figcaption><strong>Attribute claims</strong>AWS Single-Account Access app overview</figcaption></figure>
-          <figure class="shot-card"><div class="shot-placeholder">Step 5 · Users &amp; groups</div><figcaption><strong>Token certificate</strong>Assignment view with signing certificate</figcaption></figure>
-          <figure class="shot-card"><div class="shot-placeholder">Step 6 · SAML overview</div><figcaption><strong>Save prompt &amp; claims</strong>SAML settings save confirmation</figcaption></figure>
-          <figure class="shot-card"><div class="shot-placeholder">Step 7 · Users &amp; groups section</div><figcaption><strong>Assignment screen</strong>Users and groups management view</figcaption></figure>
-          <figure class="shot-card"><div class="shot-placeholder">Step 8 · IAM Identity Center guidance</div><figcaption><strong>User assigned</strong>AWS-surfaced guidance screen</figcaption></figure>
-          <figure class="shot-card"><div class="shot-placeholder">Step 9 · Assignment confirmation</div><figcaption><strong>Confirmed</strong>Entra ID assignment confirmed</figcaption></figure>
-          <figure class="shot-card"><div class="shot-placeholder">Step 10 · Related services</div><figcaption><strong>Final config</strong>AWS IAM Identity Center related services screen</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/02-entra-saml-setup-begin.png" alt="Step 1 · Entra tenant and admin context" loading="lazy"><figcaption><strong>SAML setup entry point</strong>Tenant overview before configuration begins</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/03-entra-basic-saml-config.png" alt="Step 2 · Enterprise Applications view" loading="lazy"><figcaption><strong>Basic SAML config</strong>AWS Single-Account Access application added</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/04-entra-entity-id-reply-url.png" alt="Step 3 · App gallery" loading="lazy"><figcaption><strong>Entity ID &amp; Reply URL</strong>Browsed via Microsoft Entra App Gallery</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/05-entra-attribute-claims-mapping.png" alt="Step 4 · Application overview" loading="lazy"><figcaption><strong>Attribute claims</strong>AWS Single-Account Access app overview</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/06-entra-token-signing-certificate.png" alt="Step 5 · Users and groups" loading="lazy"><figcaption><strong>Token certificate</strong>Assignment view with signing certificate</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/07-entra-saml-overview-complete.png" alt="Step 6 · SAML overview" loading="lazy"><figcaption><strong>Save prompt &amp; claims</strong>SAML settings save confirmation</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/08-entra-users-groups-section.png" alt="Step 7 · Users and groups section" loading="lazy"><figcaption><strong>Assignment screen</strong>Users and groups management view</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/09-entra-user-assigned-to-app.png" alt="Step 8 · IAM Identity Center guidance" loading="lazy"><figcaption><strong>User assigned</strong>AWS-surfaced guidance screen</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/10-entra-assignment-confirmed.png" alt="Step 9 · Assignment confirmation" loading="lazy"><figcaption><strong>Confirmed</strong>Entra ID assignment confirmed</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/11-entra-saml-config-final.png" alt="Step 10 · Related services" loading="lazy"><figcaption><strong>Final config</strong>AWS IAM Identity Center related services screen</figcaption></figure>
         </div>
       </div>
       <div class="shot-group">
         <h3>AWS IAM Configuration</h3>
         <div class="shot-grid">
-          <figure class="shot-card"><div class="shot-placeholder">Step 11 · AWS IAM dashboard</div><figcaption><strong>AWS IAM</strong>Dashboard entry point</figcaption></figure>
-          <figure class="shot-card"><div class="shot-placeholder">Step 12 · Identity provider created</div><figcaption><strong>Entra basic SAML config</strong>Identity provider registered in AWS IAM</figcaption></figure>
-          <figure class="shot-card"><div class="shot-placeholder">Step 13 · Create role</div><figcaption><strong>SAML federation</strong>Creating AWS role with SAML trust</figcaption></figure>
-          <figure class="shot-card"><div class="shot-placeholder">Step 14 · Policy attached</div><figcaption><strong>ReadOnly policy</strong>ReadOnlyAccess policy selected</figcaption></figure>
-          <figure class="shot-card"><div class="shot-placeholder">Step 15 · Role review</div><figcaption><strong>Role name &amp; review</strong>Final role configuration review</figcaption></figure>
-          <figure class="shot-card"><div class="shot-placeholder">Step 16 · Role created</div><figcaption><strong>EntraID-ReadOnly</strong>IAM role successfully created</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/12-aws-iam-dashboard.png" alt="Step 11 · AWS IAM dashboard" loading="lazy"><figcaption><strong>AWS IAM</strong>Dashboard entry point</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/13-aws-identity-provider-entraid-created.png" alt="Step 12 · Identity provider created" loading="lazy"><figcaption><strong>Entra basic SAML config</strong>Identity provider registered in AWS IAM</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/14-aws-create-role-saml-federation.png" alt="Step 13 · Create role" loading="lazy"><figcaption><strong>SAML federation</strong>Creating AWS role with SAML trust</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/15-aws-readonlyaccess-policy-selected.png" alt="Step 14 · Policy attached" loading="lazy"><figcaption><strong>ReadOnly policy</strong>ReadOnlyAccess policy selected</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/16-aws-role-name-review.png" alt="Step 15 · Role review" loading="lazy"><figcaption><strong>Role name &amp; review</strong>Final role configuration review</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/17-aws-entraid-readonly-role-created.png" alt="Step 16 · Role created" loading="lazy"><figcaption><strong>EntraID-ReadOnly</strong>IAM role successfully created</figcaption></figure>
         </div>
       </div>
       <div class="shot-group">
         <h3>Final Configuration &amp; Proof</h3>
         <div class="shot-grid">
-          <figure class="shot-card"><div class="shot-placeholder">Step 17 · Role claim mapping</div><figcaption><strong>Role ARN mapped</strong>Mapping completed in Entra ID</figcaption></figure>
-          <figure class="shot-card"><div class="shot-placeholder">Step 18 · Console access</div><figcaption><strong>SSO success</strong>AWS console access after SSO flow</figcaption></figure>
-          <figure class="shot-card"><div class="shot-placeholder">Step 19 · SSO test panel</div><figcaption><strong>SSO test</strong>Entra ID SSO test panel confirmation</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/18-entra-role-arn-claim-configured.png" alt="Step 17 · Role claim mapping" loading="lazy"><figcaption><strong>Role ARN mapped</strong>Mapping completed in Entra ID</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/19-aws-console-sso-login-success.png" alt="Step 18 · Console access" loading="lazy"><figcaption><strong>SSO success</strong>AWS console access after SSO flow</figcaption></figure>
+          <figure class="shot-card"><img src="screenshots/20-entra-sso-test-panel.png" alt="Step 19 · SSO test panel" loading="lazy"><figcaption><strong>SSO test</strong>Entra ID SSO test panel confirmation</figcaption></figure>
         </div>
       </div>
     </div>
